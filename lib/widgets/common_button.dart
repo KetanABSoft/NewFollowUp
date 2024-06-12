@@ -36,11 +36,11 @@ class CommonButton extends StatelessWidget {
     return GestureDetector(
       onTap: onPressed,
       child: Container(
-        height: height ?? 5.5.h,
+        height: height ?? 5.h,
         width: width ?? 100.w,
         decoration: BoxDecoration(
-          color: bgColor ?? ColorsForApp.primaryColor,
-          borderRadius: BorderRadius.circular(100),
+          color: bgColor ??Color(0xff7c81dd),
+          borderRadius: BorderRadius.circular(15),
           border: border ??
               Border.all(
                 width: 0,

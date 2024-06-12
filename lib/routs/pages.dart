@@ -4,10 +4,11 @@ import 'package:new_follow_up/binding/app_binding.dart';
 import 'package:new_follow_up/routs/routs.dart';
 import 'package:new_follow_up/screens/create_task_scareen.dart';
 import 'package:new_follow_up/screens/dashboard_screen.dart';
+import 'package:new_follow_up/screens/pending_task_screen.dart';
 
 import '../screens/login_screen.dart';
 class AppPages {
-  static String INITIAL_ROUTE = Routs.DASHBOARD_ROUTE;
+  static String INITIAL_ROUTE = Routs.CREATE_TASK_ROUTE;
 
   static final pages =
   [
@@ -25,6 +26,11 @@ class AppPages {
         name: Routs.DASHBOARD_ROUTE,
         page: () => DashboardScreen(),
         binding:DashboardBinding()
+    ),
+    GetPage(
+        name: Routs.PENDING_TASK_ROUTE,
+        page: () => PendingTaskScreen(),
+        binding:PendingTaskBinding()
     ),
   ];
 }

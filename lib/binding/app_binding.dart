@@ -1,7 +1,8 @@
 import 'package:get/get.dart';
-import '../controller/create_task_controller.dart';
+import '../controller/create_controller.dart';
 import '../controller/dashboard_controller.dart';
 import '../controller/login_controller.dart';
+import '../controller/pending_controller.dart';
 
 class LoginBinding extends Bindings
 {
@@ -24,5 +25,13 @@ class DashboardBinding extends Bindings
   @override
   void dependencies() {
     Get.lazyPut(() => DashboardController());
+  }
+}
+
+class PendingTaskBinding extends Bindings
+{
+  @override
+  void dependencies() {
+    Get.lazyPut(() => PendingTaskController());
   }
 }
