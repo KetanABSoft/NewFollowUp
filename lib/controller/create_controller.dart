@@ -1,10 +1,11 @@
 import 'dart:convert';
-
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import '../api/model/add_task.dart';
-import '../screens/dashboard_screen.dart';
+
+import '../api/model/get_emp.dart';
 
 class CreateTaskController extends GetxController
 {
@@ -23,15 +24,15 @@ class CreateTaskController extends GetxController
 
   RxList<String> selectedItems = <String>[].obs;
 
-  Future<void> createTask() async {
-    final url = Uri.parse('http://localhost:5000/api/task/create');
+  Future<bool> createTask() async {
+    try{ final url = Uri.parse('http://localhost:5000/api/task/create');
     final payload = {
-      "title": "wertyui",
+      "title": titleController.text.toString(),
       "description": "dsfghjkl",
       "assignTo": ["66545e272c6f1c12159398a4"],
-      "startDate": "2024-06-07T00:00:00.000Z",
-      "deadlineDate": "2024-06-09T00:00:00.000Z",
-      "reminderDate": "2024-06-08T00:00:00.000Z",
+      "startDate": startDateController.text.toString(),
+      "deadlineDate":endDateController.text.toString(),
+      "reminderDate": reminderDateController.text.toString(),
       "startTime": "11:42 AM",
       "endTime": "11:40 AM",
       "reminderTime": "11:40 AM",
@@ -45,14 +46,73 @@ class CreateTaskController extends GetxController
       },
       body: json.encode(payload),
     );
-print("###################$payload");
-    if (response.statusCode == 200) {
+    print("###################$payload");
+    if (response.statusCode == 201) {
       final responseData = json.decode(response.body);
-      print("Response: $responseData");
+      if (kDebugMode) {
+        print("Response: $responseData");
+      }
       List<dynamic> tasks = responseData['tasks'];
-      Get.to(DashboardScreen());
+      return true ;
     } else {
       print("Failed to create task. Status code: ${response.statusCode}");
+      return false;
     }
+    }catch(e){
+      if (kDebugMode) {
+        print(e);
+      }
+      return false ;
+    }
+
   }
+
+  // List<GetEmp> employees = [];
+  // Future<List<GetEmp>> getEmp() async
+  // {
+  //  final response = await http.get(Uri.parse("http://localhost:5000/api/employee/subemployee/list"));
+  //  var data = jsonDecode(response.body.toString());
+  //  if(response.statusCode==200)
+  //    {
+  //      for(var index in data)
+  //        {
+  //          employees.add(GetEmp.fromJson(index));
+  //          print("#################${employees.toString()}");
+  //        }
+  //      return employees;
+  //    }
+  //  else
+  //    {
+  //      return employees;
+  //    }
+  // }
+
+
+// Future<List<GetEmp>> getEmp() async {
+//     try
+//         {
+//           final response = await http.get(Uri.parse("http://localhost:5000/api/employee/subemployee/list"));
+//           var data = jsonDecode(response.body.toString()) as List;
+//
+//           if(response.statusCode==200)
+//             {
+//               return data.map((e) {
+//                 final map = e as Map<String , dynamic>;
+//                 return GetEmp(
+//                     id: map["66545d952c6f1c121593988d"],
+//                     name: map["Varad"],
+//                     phoneNumber: map["7385562528"],
+//                     email: map["varad@gmail.com"],
+//                     password: map[""],
+//                     adminCompanyName: map["Acme"],
+//                     v: map["0"]
+//                 );
+//               }).toList();
+//             }
+//         }on SocketException{
+//       throw Exception("No Internet");
+//     }
+//
+//     throw Exception("Error Fetching Data");
+// }
 }

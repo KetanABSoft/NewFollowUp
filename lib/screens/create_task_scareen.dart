@@ -1,15 +1,20 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:new_follow_up/controller/create_controller.dart';
 import 'package:new_follow_up/widgets/common_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
+import '../api/model/get_emp.dart';
 import '../controller/dashboard_controller.dart';
+import '../routs/routs.dart';
 import '../utils/text_fields.dart';
 import 'dashboard_screen.dart';
 import 'package:intl/intl.dart';
-
+import 'package:http/http.dart' as http;
 class CreateTaskScreen extends StatefulWidget {
   const CreateTaskScreen({super.key});
 
@@ -21,6 +26,34 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
   CreateTaskController createTaskController = Get.put(CreateTaskController());
   DashboardController dashboardController = Get.put(DashboardController());
 
+  Future<List<GetEmp>> getEmp() async {
+    try
+    {
+      final response = await http.get(Uri.parse("http://localhost:5000/api/employee/subemployee/list"));
+      var data = jsonDecode(response.body.toString()) as List;
+       print("#############$data");
+      if(response.statusCode==200)
+      {
+        return data.map((e) {
+          final map = e as Map<String , dynamic>;
+          return GetEmp(
+              id: map["6662bb237eb0fa05e62b4ed4"],
+              name: map["Varad"],
+              phoneNumber: map["7385562528"],
+              email: map["varad@gmail.com"],
+              adminCompanyName: map["Acme"],
+              v: map["0"],
+              password: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImtldGFuQGdtYWlsLmNvbSIsInJvbGUiOiJzdXBlckFkbWluIiwiaWF0IjoxNzE4Mjc4MTI3fQ.HbiuQN9eaScsvRw-TVCA4JvWZhSZpm48g0MRbbrCDTs'
+          );
+        }).toList();
+      }
+    }on SocketException{
+      throw Exception("No Internet");
+    }
+
+    throw Exception("Error Fetching Data");
+  }
+  var selectValue;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -126,20 +159,20 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                                       pickedDate.month,
                                       pickedDate.day,
                                     );
-        
+
                                     if (pickedDateWithoutTime
                                         .isAfter(currentDateWithoutTime) ||
                                         pickedDateWithoutTime.isAtSameMomentAs(
                                             currentDateWithoutTime)) {
                                       String formattedStartDate =
-                                      DateFormat('dd-MM-yyyy')
+                                      DateFormat('yyyy-MM-dd')
                                           .format(pickedDate);
-        
+
                                       setState(() {
                                         createTaskController.startDateController
                                             .text = formattedStartDate;
                                       });
-        
+
                                       SharedPreferences prefs =
                                       await SharedPreferences.getInstance();
                                       await prefs.setString(
@@ -226,24 +259,24 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                                       pickedDate.month,
                                       pickedDate.day,
                                     );
-        
-                                    DateTime startDate = DateFormat('dd-MM-yyyy')
+
+                                    DateTime startDate = DateFormat('yyyy-MM-dd')
                                         .parse(createTaskController
                                         .startDateController.text);
-        
+
                                     if (pickedDateWithoutTime
                                         .isAfter(startDate) ||
                                         pickedDateWithoutTime
                                             .isAtSameMomentAs(startDate)) {
                                       String formattedDate =
-                                      DateFormat('dd-MM-yyyy')
+                                      DateFormat('yyyy-MM-dd')
                                           .format(pickedDate);
-        
+
                                       setState(() {
                                         createTaskController.endDateController
                                             .text = formattedDate;
                                       });
-        
+
                                       SharedPreferences prefs =
                                       await SharedPreferences.getInstance();
                                       await prefs.setString(
@@ -315,10 +348,10 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                                 onTap: () async {
                                   DateTime now = DateTime.now();
                                   print("iwontcorrecttime");
-        
+
                                   DateFormat dateFormat = DateFormat(
-                                      'dd-MM-yyyy'); // Format for the start date
-        
+                                      'yyyy-MM-dd'); // Format for the start date
+
                                   DateTime selectedStartDate =
                                   createTaskController
                                       .startDateController.text.isNotEmpty
@@ -333,7 +366,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                                       initialTime: TimeOfDay.now(),
                                       context: context,
                                     );
-        
+
                                     if (pickedTime != null) {
                                       DateTime now = DateTime.now();
                                       String formattedTime =
@@ -366,7 +399,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                                       initialTime: TimeOfDay.now(),
                                       context: context,
                                     );
-        
+
                                     if (pickedTime != null) {
                                       DateTime now = DateTime.now();
                                       TimeOfDay currentTimeOfDay =
@@ -408,7 +441,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                                           DateTime(now.year, now.month, now.day,
                                               pickedTime.hour, pickedTime.minute),
                                         );
-        
+
                                         String endTimenew =
                                         DateFormat('HH:mm:ss').format(
                                           DateTime(
@@ -465,7 +498,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                                 onTap: () async {
                                   DateTime now = DateTime.now();
                                   DateFormat dateFormat = DateFormat(
-                                      'dd-MM-yyyy'); // Format for the start date
+                                      'yyyy-MM-dd'); // Format for the start date
                                   DateTime selectedStartDate =
                                   createTaskController
                                       .startDateController.text.isNotEmpty
@@ -487,7 +520,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                                     );
                                     if (pickedTime != null) {
                                       DateTime now = DateTime.now();
-        
+
                                       String formattedTime =
                                       DateFormat('HH:mm:ss').format(
                                         DateTime(now.year, now.month, now.day,
@@ -497,7 +530,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                                         createTaskController.endTimeController
                                             .text = formattedTime;
                                       });
-        
+
                                       SharedPreferences prefs =
                                       await SharedPreferences.getInstance();
                                       await prefs.setString(
@@ -513,7 +546,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                                           DateTime.now().year,
                                           DateTime.now().month,
                                           DateTime.now().day);
-        
+
                                       DateTime now = DateTime.now();
                                       TimeOfDay currentTimeOfDay =
                                       TimeOfDay.fromDateTime(now);
@@ -525,7 +558,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                                           createTaskController
                                               .endDateController.text)
                                           : DateTime(0);
-        
+
                                       if ((pickedTime.hour <
                                           currentTimeOfDay.hour ||
                                           (pickedTime.hour ==
@@ -632,14 +665,14 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                                       pickedDate.month,
                                       pickedDate.day,
                                     );
-        
-                                    DateTime startDate = DateFormat('dd-MM-yyyy')
+
+                                    DateTime startDate = DateFormat('yyyy-MM-dd')
                                         .parse(createTaskController
                                         .startDateController.text);
-                                    DateTime endDate = DateFormat('dd-MM-yyyy')
+                                    DateTime endDate = DateFormat('yyyy-MM-dd')
                                         .parse(createTaskController
                                         .endDateController.text);
-        
+
                                     if ((pickedDateWithoutTime
                                         .isAfter(startDate) ||
                                         pickedDateWithoutTime
@@ -651,10 +684,10 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                                       setState(() {
                                         createTaskController
                                             .reminderDateController.text =
-                                            DateFormat('dd-MM-yyyy')
+                                            DateFormat('yyyy-MM-dd')
                                                 .format(pickedDate);
                                       });
-        
+
                                       SharedPreferences prefs =
                                       await SharedPreferences.getInstance();
                                       await prefs.setString(
@@ -723,8 +756,8 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                                 onTap: () async {
                                   DateTime now = DateTime.now();
                                   DateFormat dateFormat = DateFormat(
-                                      'dd-MM-yyyy'); // Format for the start date
-        
+                                      'yyyy-MM-dd'); // Format for the start date
+
                                   DateTime selectedStartDate =
                                   createTaskController
                                       .startDateController.text.isNotEmpty
@@ -839,87 +872,32 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                         ],
                       ),
                       SizedBox(height: 4.h),
-                      // Container(
-                      //   height: 18.5.h,
-                      //   width: 80.w,
-                      //   decoration: BoxDecoration(
-                      //     border: Border.all(color: Colors.black), // Apply border
-                      //     borderRadius: BorderRadius.circular(10),
-                      //   ),
-                      //   child: SingleChildScrollView(
-                      //     child: MultiSelectDialogField(
-                      //       items: dropdownData
-                      //           .map((item) => MultiSelectItem(
-                      //           item['id'], item['firstname']))
-                      //           .toList(),
-                      //       initialValue: selectedData,
-                      //       onConfirm: (values) {
-                      //         setState(() {
-                      //           selectedValue = values;
-                      //         });
-                      //         saveSelectedValuesToPrefs(selectedValue);
-                      //       },
-                      //       title: Text(
-                      //         'Select Assign',
-                      //         style: TextStyle(
-                      //             fontFamily: 'Poppins',
-                      //             color: Colors.grey,
-                      //             fontSize: 11.5.sp),
-                      //       ),
-                      //       buttonText: Text('Select Assign',
-                      //           style: TextStyle(
-                      //               fontFamily: 'Poppins', fontSize: 11.5.sp)),
-                      //     ),
-                      //   ),
-                      // ),
-                      // SizedBox(height: 4.h),
-                      // Row(
-                      //   children: [
-                      //     //SizedBox(width: 6.w),
-                      //     Expanded(
-                      //       child: ElevatedButton(
-                      //         style: ElevatedButton.styleFrom(
-                      //           backgroundColor: Color(0xff7c81dd),
-                      //         ),
-                      //         onPressed: () {
-                      //           Navigator.push(
-                      //             context,
-                      //             MaterialPageRoute(
-                      //               builder: (context) => MyApp(
-                      //                 title: title.text,
-                      //                 startdate: startdate.text,
-                      //                 deadlinedate: deadlinedate.text,
-                      //                 starttime: starttime.text,
-                      //                 endtime: endtime.text,
-                      //                 image: image.toString(),
-                      //               ),
-                      //             ),
-                      //           );
-                      //         },
-                      //         child: const Text('Upload Audio',
-                      //             style: TextStyle(
-                      //               fontFamily: 'Poppins',
-                      //               color: Colors.white,
-                      //             )),
-                      //       ),
-                      //     ),
-                      //     SizedBox(width: 6.w),
-                      //     Expanded(
-                      //       child: ElevatedButton(
-                      //         onPressed: () {
-                      //           myAlert();
-                      //         },
-                      //         style: ElevatedButton.styleFrom(
-                      //           backgroundColor: Color(0xff7c81dd),
-                      //         ),
-                      //         child: Text('Upload Photo',
-                      //             style: TextStyle(
-                      //                 fontFamily: 'Poppins',
-                      //                 color: Colors.white)),
-                      //       ),
-                      //     ),
-                      //   ],
-                      // ),
+                      FutureBuilder(
+                          future: getEmp(),
+                          builder: (context , snapshot){
+                            if(snapshot.hasData)
+                            {
+                              return DropdownButton(
+                                  hint: Text("Select Value"),
+                                  items: snapshot.data!.map((e){
+                                    return DropdownMenuItem(
+                                        value: e.name.toString(),
+                                        child: Text(e.name.toString()),
+                                    );
+                                  }).toList(),
+                                  onChanged: (value){
+                                    setState(() {
+                                      selectValue=value;
+                                    });
+                                  }
+                              );
+                            }
+                            else{
+                              return Center(child: CircularProgressIndicator());
+                            }
+                          }
+                      ),
+                      SizedBox(height: 4.h),
                       Container(
                         height: 20.h,
                         decoration: BoxDecoration(
@@ -942,58 +920,89 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                                     "select",
                                     style: TextStyle(color: Colors.black),
                                   ),
-                                  SizedBox(width: 3.w),
-                                  GestureDetector(
-                                    onTap: () {
-                                      showModalBottomSheet(
-                                        context: context,
-                                        builder: (context) {
-                                          return ListView.builder(
-                                            itemCount:
-                                            createTaskController.abc.length,
-                                            itemBuilder: (context, index) {
-                                              return Obx(
-                                                    () => Column(
-                                                  children: [
-                                                    ListTile(
-                                                      title: Text(
-                                                          createTaskController
-                                                              .abc[index]),
-                                                      trailing: Checkbox(
-                                                        value: createTaskController
-                                                            .selectedItems
-                                                            .contains(
-                                                            createTaskController
-                                                                .abc[index]),
-                                                        onChanged: (bool? value) {
-                                                          if (value == true) {
-                                                            createTaskController
-                                                                .selectedItems
-                                                                .add(
-                                                                createTaskController
-                                                                    .abc[
-                                                                index]);
-                                                          } else {
-                                                            createTaskController
-                                                                .selectedItems
-                                                                .remove(
-                                                                createTaskController
-                                                                    .abc[
-                                                                index]);
-                                                          }
-                                                        },
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              );
-                                            },
-                                          );
-                                        },
-                                      );
-                                    },
-                                    child: Icon(Icons.arrow_drop_down),
-                                  ),
+                                  SizedBox(width: 7.w),
+                                  // GestureDetector(
+                                  //   onTap: () {
+                                  //     showModalBottomSheet(
+                                  //       context: context,
+                                  //       builder: (context) {
+                                  //         return FutureBuilder(
+                                  //           future: createTaskController.getEmp(),
+                                  //           builder: (snapshot , index){
+                                  //             return  ListView.builder(
+                                  //               itemCount: createTaskController.abc.length,
+                                  //               itemBuilder: (context, index) {
+                                  //                 return Obx(
+                                  //                       () => Column(
+                                  //                     children: [
+                                  //                       ListTile(
+                                  //                         title: Text(
+                                  //                             createTaskController
+                                  //                                 .abc[index]),
+                                  //                         trailing: Checkbox(
+                                  //                           value: createTaskController
+                                  //                               .selectedItems
+                                  //                               .contains(
+                                  //                               createTaskController
+                                  //                                   .abc[index]),
+                                  //                           onChanged: (bool? value) {
+                                  //                             if (value == true) {
+                                  //                               createTaskController
+                                  //                                   .selectedItems
+                                  //                                   .add(
+                                  //                                   createTaskController
+                                  //                                       .abc[
+                                  //                                   index]);
+                                  //                             } else {
+                                  //                               createTaskController
+                                  //                                   .selectedItems
+                                  //                                   .remove(
+                                  //                                   createTaskController
+                                  //                                       .abc[
+                                  //                                   index]);
+                                  //                             }
+                                  //                           },
+                                  //                         ),
+                                  //                       ),
+                                  //                     ],
+                                  //                   ),
+                                  //                 );
+                                  //               },
+                                  //             );
+                                  //           },
+                                  //
+                                  //         );
+                                  //       },
+                                  //     );
+                                  //   },
+                                  //   child: Icon(Icons.arrow_drop_down),
+                                  // ),
+
+                                  // FutureBuilder(
+                                  //     future: getEmp(),
+                                  //     builder: (context , snapshot){
+                                  //       if(snapshot.hasData)
+                                  //         {
+                                  //           return DropdownButton(
+                                  //             hint: Text("Select Value"),
+                                  //               items: snapshot.data!.map((e){
+                                  //                 return DropdownMenuItem(
+                                  //                     value: e.name.toString(),
+                                  //                     child: Text(e.name.toString())
+                                  //                 );
+                                  //               }).toList(),
+                                  //               onChanged: (value){
+                                  //                 setState(() {
+                                  //                   selectValue=value;
+                                  //                 });
+                                  //               }
+                                  //           );
+                                  //         }
+                                  //       else{
+                                  //         return Center(child: CircularProgressIndicator());
+                                  //       }
+                                  //     }
+                                  // )
                                 ],
                               ),
                             ),
@@ -1027,7 +1036,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                             ),
                           ],
                         ),
-        
+
                       )
                     ],
                   )
@@ -1057,8 +1066,11 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                 ],
               ),
               SizedBox(height: 3.h,),
-              CommonButton(onPressed: (){
-                createTaskController.createTask();
+              CommonButton(onPressed: () async {
+                bool taskCreated = await createTaskController.createTask();
+                if(taskCreated){
+                  Get.toNamed(Routs.DASHBOARD_ROUTE);
+                }
               }, label: "Save")
             ],
           ),
