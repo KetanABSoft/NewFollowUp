@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:new_follow_up/routs/pages.dart';
+import 'package:new_follow_up/screens/admin/set_widget.dart';
+import 'package:new_follow_up/screens/timeshit.dart';
 import 'package:sizer/sizer.dart';
 
 void main() {
@@ -23,6 +25,8 @@ class MyApp extends StatelessWidget {
             ),
             getPages: AppPages.pages,
             initialRoute: AppPages.INITIAL_ROUTE,
+            // home: TimeShit(),
+            // home: SetWidgets(),
           );
         }
     );
