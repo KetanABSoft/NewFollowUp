@@ -15,9 +15,7 @@ Future<bool> EmployeeLoginApi() async {
   Map<String, dynamic> abc = {
     'email': usernamecontroller.text.trim(),
     'password': passwordcontroller.text.trim(),
-
   };
-
   try {
     final response = await http.post(
       Uri.parse("http://103.159.85.246:4000/api/subemployee/login"),
@@ -26,7 +24,6 @@ Future<bool> EmployeeLoginApi() async {
         'Content-Type': 'application/json; charset=utf-8',
       },
     );
-
     if (response.statusCode == 200) {
       data = jsonDecode(response.body);
       print('Data Added: $data');

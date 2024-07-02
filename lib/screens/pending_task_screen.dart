@@ -1,23 +1,23 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:get/get.dart';
-import 'package:get/get_navigation/get_navigation.dart';
-import 'package:sizer/sizer.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
 
 class PendingTaskScreen extends StatefulWidget {
-  const PendingTaskScreen({super.key});
+  const PendingTaskScreen({Key? key}) : super(key: key);
 
   @override
-  State<PendingTaskScreen> createState() => _PendingTaskScreenState();
+  _PendingTaskScreenState createState() => _PendingTaskScreenState();
 }
 
 class _PendingTaskScreenState extends State<PendingTaskScreen> {
+  File? _selectedImage;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // backgroundColor: Color(0xff8155BA),
         backgroundColor: Color(0xff7c81dd),
         elevation: 0,
         title: Text(
@@ -26,7 +26,7 @@ class _PendingTaskScreenState extends State<PendingTaskScreen> {
           style: TextStyle(
             fontFamily: 'Poppins',
             color: Colors.white,
-            fontSize: 20.sp,
+            fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -34,214 +34,276 @@ class _PendingTaskScreenState extends State<PendingTaskScreen> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            Get.back();
+            Navigator.of(context).pop();
           },
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.only(left: 18.sp, right: 18.sp, top: 5.sp),
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView.builder(
-                  itemCount: 5,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: EdgeInsets.only(top: 15.sp),
-                      child: Container(
-                        height: 20.h,
-                        width: 100.w,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(bottomRight: Radius.circular(11),bottomLeft: Radius.circular(11)),
-                            border: Border.all(color: Color.fromARGB(255, 77, 77, 174),width: 2)),
-                        child: Column(
-                          children: [
-                            Container(
-                              height: 5.h,
-                              decoration: BoxDecoration(
-                                  color: Color.fromARGB(255, 77, 77, 174)),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.only(left: 10.sp),
-                                    child: Text(
-                                      "Status",
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18.sp,
-                                          fontWeight: FontWeight.w600),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(right: 10.sp),
-                                    child: Text(
-                                      "Assign By",
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18.sp,
-                                          fontWeight: FontWeight.w600),
-                                    ),
-                                  )
-                                ],
+        padding: EdgeInsets.all(18),
+        child: ListView.builder(
+          itemCount: 5,
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: EdgeInsets.only(top: 15),
+              child: Container(
+                height: 230,
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(11),
+                  border: Border.all(color: Color.fromARGB(255, 77, 77, 174), width: 2),
+                ),
+                child: Column(
+                  children: [
+                    Container(
+                      height: 50,
+                      color: Color.fromARGB(255, 77, 77, 174),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(left: 10),
+                            child: Text(
+                              "Status",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
-                            SizedBox(
-                              height: 0.3.h,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(right: 10),
+                            child: Text(
+                              "Assign By",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(left: 10.sp),
-                                  child: Text(
-                                    "Title",
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 18.sp,
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(right: 10.sp),
-                                  child: Icon(
-                                    Icons.more_vert,
-                                    size: 18.sp,
-                                    color: Colors.black,
-                                  ),
-                                )
-                              ],
-                            ),
-                            SizedBox(
-                              height: 0.2.h,
-                            ),
-                            Divider(
-                              // color: Color.fromARGB(255, 77, 77, 174),
-                              color: Colors.grey,
-                              thickness: 2,
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Row(
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(left: 10.sp),
-                                        child: Icon(
-                                          Icons.calendar_month_outlined,
-                                          size: 18.sp,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.only(left: 10.sp),
-                                        child: Text(
-                                          "22-05-2024",
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: 15.sp),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 10.sp,
-                                ),
-                                Expanded(
-                                  child: Row(
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(left: 10.sp),
-                                        child: Icon(
-                                          Icons.calendar_month_outlined,
-                                          size: 18.sp,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.only(left: 10.sp),
-                                        child: Text(
-                                          "22-05-2024",
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: 15.sp),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 10.sp,
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Row(
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(left: 10.sp),
-                                        child: Icon(
-                                          Icons.watch_later_outlined,
-                                          size: 18.sp,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.only(left: 10.sp),
-                                        child: Text(
-                                          "22-05-2024",
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: 15.sp),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 15.sp,
-                                ),
-                                Expanded(
-                                  child: Row(
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(left: 10.sp),
-                                        child: Icon(
-                                          Icons.watch_later_outlined,
-                                          size: 18.sp,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.only(left: 10.sp),
-                                        child: Text(
-                                          "22-05-2024",
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: 15.sp),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    );
-                  }),
-            )
-          ],
+                    ),
+                    SizedBox(height: 5),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(left: 10),
+                          child: Text(
+                            "Title",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        PopupMenuButton<String>(
+                          itemBuilder: (BuildContext context) => [
+                            const PopupMenuItem<String>(
+                              value: 'view',
+                              child: Text('View'),
+                            ),
+                            const PopupMenuItem<String>(
+                              value: 'remark',
+                              child: Text('Remark'),
+                            ),
+                            const PopupMenuItem<String>(
+                              value: 'edit',
+                              child: Text('Update'),
+                            ),
+                            const PopupMenuItem<String>(
+                              value: 'complete',
+                              child: Text('Mark as Completed'),
+                            ),
+                            const PopupMenuItem<String>(
+                              value: 'delete',
+                              child: Text('Delete'),
+                            ),
+                          ],
+                          onSelected: (String value) {
+                            if (value == 'view') {
+                              // Handle view action
+                            } else if (value == 'edit') {
+                              // Handle edit action
+                            } else if (value == 'delete') {
+                              // Handle delete action
+                            } else if (value == 'remark') {
+                              // Handle remark action
+                            } else if (value == 'complete') {
+                              // Handle complete action
+                              _showImagePickerOptions();
+                            }
+                          },
+                          icon: Icon(Icons.more_vert),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 5),
+                    Divider(color: Colors.grey, thickness: 2),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(left: 10),
+                                child: Icon(Icons.calendar_today_outlined, size: 18),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 10),
+                                child: Text(
+                                  "22-05-2024",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(left: 10),
+                                child: Icon(Icons.watch_later_outlined, size: 18),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 10),
+                                child: Text(
+                                  "22-05-2024",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(left: 10),
+                                child: Icon(Icons.calendar_today_outlined, size: 18),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 10),
+                                child: Text(
+                                  "22-05-2024",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(left: 10),
+                                child: Icon(Icons.watch_later_outlined, size: 18),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 10),
+                                child: Text(
+                                  "22-05-2024",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
         ),
       ),
     );
+  }
+
+  void _showImagePickerOptions() {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          padding: EdgeInsets.all(18),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              InkWell(
+                onTap: () {
+                  _pickImageFromCamera();
+                  Navigator.pop(context);
+                },
+                child: Row(
+                  children: [
+                    Icon(Icons.camera_alt, size: 70),
+                    SizedBox(width: 10),
+                    Text("Camera"),
+                  ],
+                ),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  // Handle other options if needed
+                  Navigator.pop(context);
+                },
+                child: Text('Cancel'),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _pickImageFromCamera() async {
+    final pickedImage = await ImagePicker().pickImage(source: ImageSource.camera);
+    if (pickedImage == null) return;
+
+    setState(() {
+      _selectedImage = File(pickedImage.path);
+    });
+
+    // Call the upload function after selecting the image
+    await _uploadImage(_selectedImage!);
+olp[.[];[p.p[l]]]    var request = http.MultipartRequest('PUT', Uri.parse(apiUrl));
+    request.files.add(await http.MultipartFile.fromPath('image', pickedImage.path));
+    var response = await request.send();
+    if (response.statusCode == 200) {
+      print('Image uploaded successfully');
+      // Handle success here
+    } else {
+      print('Failed to upload image');
+      // Handle failure here
+    }
   }
 }

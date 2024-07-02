@@ -29,15 +29,18 @@ class CreateTaskController extends GetxController
     final payload = {
       "title": titleController.text.toString(),
       "description": "dsfghjkl",
-      "assignTo": ["66545e272c6f1c12159398a4"],
+      "assignTo": [
+        "66545e272c6f1c12159398a4"
+      ],
       "startDate": startDateController.text.toString(),
       "deadlineDate":endDateController.text.toString(),
       "reminderDate": reminderDateController.text.toString(),
-      "startTime": "11:42 AM",
-      "endTime": "11:40 AM",
-      "reminderTime": "11:40 AM",
+      "startTime": startTimeController.text.toString(),
+      "endTime": endTimeController.text.toString(),
+      "reminderTime": reminderTimeController.text.toString(),
       "status": "pending",
-      "assignedBy": ["66545d952c6f1c121593988b"]
+      "assignedBy":
+      ["66545d952c6f1c121593988b"]
     };
     final response = await http.post(
       url,

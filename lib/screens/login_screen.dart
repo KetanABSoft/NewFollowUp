@@ -94,7 +94,7 @@ class LoginScreen extends StatelessWidget {
                               onTap: () async {
                                 if (loginKey.currentState!.validate()) {
                                   bool loginSuccessful =
-                                  (await loginController.EmployeeLoginApi()) as bool;
+                                  await loginController.EmployeeLoginApi() as bool;
                                   if (loginSuccessful) {
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
